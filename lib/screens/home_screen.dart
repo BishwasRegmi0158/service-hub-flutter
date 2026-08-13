@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/booking_data_provider.dart';
 import '../widgets/professional_card.dart';
+import 'chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,7 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
           }).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('ServiceHub')),
+      appBar: AppBar(
+        title: const Text('ServiceHub'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.smart_toy_outlined),
+            tooltip: 'Ask the assistant',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(

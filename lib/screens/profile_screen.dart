@@ -85,18 +85,18 @@ class _GuestHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 14, offset: Offset(0, 8))],
       ),
-      child: Row(
+      child: const Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 28,
             backgroundColor: Color(0xFFEAF0FF),
             child: Icon(Icons.person_outline, color: Color(0xFF2563EB), size: 30),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('Browsing as Guest', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
                 SizedBox(height: 4),
                 Text('Sign in to save bookings to your account.', style: TextStyle(color: Colors.black54, fontSize: 12.5)),

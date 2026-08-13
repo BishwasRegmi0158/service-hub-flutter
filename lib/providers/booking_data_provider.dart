@@ -1,12 +1,12 @@
 // BookingDataProvider
-// Central place holding: the fetched professionals list, the wishlist
-// (saved favorite professionals), and the cart (professionals queued up
-// to book together, e.g. booking a painter AND an electrician for the
-// same day).
+// Central place holding: the professionals list (now API-fetched PLUS
+// provider-created listings from Hive), the wishlist, the cart, and —
+// new — booking status management (approve/reject/cancel).
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/professional.dart';
+import '../models/booking_model.dart';
 import '../models/trade.dart';
 import '../services/api_service.dart';
 
@@ -28,6 +28,8 @@ class BookingDataProvider extends ChangeNotifier {
   double get cartTotal => _cart.fold(0.0, (sum, p) => sum + p.pricePerHour);
 
   Box get _wishlistBox => Hive.box('wishlist');
+  Box get _professionalsBox => Hive.box('professionals');
+  Box get _bookingsBox => Hive.box('bookings');
 
   // ---------- Fetching ----------
 
@@ -37,7 +39,16 @@ class BookingDataProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _professionals = await _apiService.getProfessionals(count: 40);
+      final apiPros = await _apiService.getProfessionals(count: 40);
+
+      // Real signed-up providers, once admin-approved, show up in the
+      // catalog right alongside the RandomUser.me-seeded demo entries.
+      final localPros = _professionalsBox.values
+          .map((m) => Professional.fromMap(m))
+          .where((p) => p.isApproved)
+          .toList();
+
+      _professionals = [...apiPros, ...localPros];
     } catch (e) {
       errorMessage = e.toString();
     } finally {
@@ -64,8 +75,6 @@ class BookingDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Restores wishlist after app restart by matching saved ids against the
-  // freshly-fetched professionals list. Call after fetchProfessionals().
   void restoreWishlistFromStorage() {
     final savedIds = List<String>.from(_wishlistBox.get('ids', defaultValue: []));
     if (savedIds.isEmpty) return;
@@ -96,6 +105,55 @@ class BookingDataProvider extends ChangeNotifier {
 
   void clearCart() {
     _cart.clear();
+    notifyListeners();
+  }
+
+  // ---------- Provider's own listing ----------
+
+  Professional? professionalForOwner(String userId) {
+    final match = _professionalsBox.values
+        .map((m) => Professional.fromMap(m))
+        .where((p) => p.ownerUserId == userId);
+    return match.isEmpty ? null : match.first;
+  }
+
+  Future<void> updateProfessional(Professional professional) async {
+    await _professionalsBox.put(professional.id, professional.toMap());
+    notifyListeners();
+  }
+
+  // ---------- Bookings ----------
+  // (Booking creation still happens directly in booking_form_screen.dart,
+  // unchanged — these are the new read/update helpers for the provider
+  // and admin sides.)
+
+  List<BookingModel> get allBookings =>
+      _bookingsBox.values.map((m) => BookingModel.fromMap(m)).toList();
+
+  List<BookingModel> bookingsForProfessional(String professionalId) {
+    final list = allBookings.where((b) => b.professionalId == professionalId).toList();
+    list.sort((a, b) => a.status == 'pending' ? -1 : (b.status == 'pending' ? 1 : 0));
+    return list;
+  }
+
+  List<BookingModel> bookingsForUser(String? userId) =>
+      allBookings.where((b) => b.userId == userId).toList();
+
+  dynamic _keyForBookingId(String bookingId) {
+    for (final key in _bookingsBox.keys) {
+      final map = _bookingsBox.get(key);
+      if (map != null && map['id'] == bookingId) return key;
+    }
+    return null;
+  }
+
+  // status: 'approved' | 'rejected' | 'cancelled' | 'completed'
+  Future<void> updateBookingStatus(String bookingId, String status) async {
+    final key = _keyForBookingId(bookingId);
+    if (key == null) return;
+
+    final booking = BookingModel.fromMap(_bookingsBox.get(key));
+    await _bookingsBox.put(key, booking.copyWith(status: status).toMap());
     notifyListeners();
   }
 }

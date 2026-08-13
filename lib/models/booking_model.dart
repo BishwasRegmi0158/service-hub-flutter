@@ -4,6 +4,12 @@
 //   - Booked as guest        -> userId = null
 // "My Bookings" filters by this so guests and different accounts each
 // only ever see their own bookings on a shared device.
+//
+// status is new: every booking now starts 'pending' and the owning
+// service provider approves or rejects it (see BookingDataProvider.
+// updateBookingStatus). The user can cancel their own pending booking
+// the same way.
+//   'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed'
 
 class BookingModel {
   final String id;
@@ -18,6 +24,7 @@ class BookingModel {
   final String date;
   final String time;
   final String notes;
+  final String status;
 
   BookingModel({
     required this.id,
@@ -32,7 +39,26 @@ class BookingModel {
     required this.date,
     required this.time,
     required this.notes,
+    this.status = 'pending',
   });
+
+  BookingModel copyWith({String? status}) {
+    return BookingModel(
+      id: id,
+      userId: userId,
+      professionalId: professionalId,
+      professionalName: professionalName,
+      professionalPhoto: professionalPhoto,
+      tradeName: tradeName,
+      pricePerHour: pricePerHour,
+      customerName: customerName,
+      address: address,
+      date: date,
+      time: time,
+      notes: notes,
+      status: status ?? this.status,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -48,6 +74,7 @@ class BookingModel {
       'date': date,
       'time': time,
       'notes': notes,
+      'status': status,
     };
   }
 
@@ -65,6 +92,7 @@ class BookingModel {
       date: map['date'] ?? '',
       time: map['time'] ?? '',
       notes: map['notes'] ?? '',
+      status: map['status'] ?? 'pending',
     );
   }
 }
