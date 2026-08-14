@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/booking_data_provider.dart';
+import 'provider_detail_screen.dart';
 
 class ManageProvidersScreen extends StatelessWidget {
   const ManageProvidersScreen({super.key});
@@ -24,6 +25,12 @@ class ManageProvidersScreen extends StatelessWidget {
                   child: ListTile(
                     title: Text(p.name),
                     subtitle: Text(p.email),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ProviderDetailScreen(provider: p)),
+                      );
+                    },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

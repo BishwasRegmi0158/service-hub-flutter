@@ -122,6 +122,35 @@ class BookingDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Now plural: a provider can own several listings.
+  List<Professional> professionalsForOwner(String userId) {
+    return _professionalsBox.values
+        .map((m) => Professional.fromMap(m))
+        .where((p) => p.ownerUserId == userId)
+        .toList();
+  }
+
+  Professional? professionalById(String id) {
+    final map = _professionalsBox.get(id);
+    return map == null ? null : Professional.fromMap(map);
+  }
+
+  Future<void> addProfessional(Professional professional) async {
+    await _professionalsBox.put(professional.id, professional.toMap());
+    notifyListeners();
+  }
+
+  Future<void> deleteProfessional(String id) async {
+    await _professionalsBox.delete(id);
+    notifyListeners();
+  }
+
+  List<BookingModel> bookingsForProfessionals(List<String> professionalIds) {
+    final list = allBookings.where((b) => professionalIds.contains(b.professionalId)).toList();
+    list.sort((a, b) => a.status == 'pending' ? -1 : (b.status == 'pending' ? 1 : 0));
+    return list;
+  }
+
   // ---------- Bookings ----------
   // (Booking creation still happens directly in booking_form_screen.dart,
   // unchanged — these are the new read/update helpers for the provider

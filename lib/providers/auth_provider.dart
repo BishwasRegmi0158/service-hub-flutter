@@ -187,6 +187,20 @@ class AuthProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<void> promoteToAdmin(String userId) async {
+    final key = _keyForUserId(userId);
+    if (key == null) return;
+
+    final user = UserModel.fromMap(_usersBox.get(key));
+    final updated = user.copyWith(role: 'admin');
+    await _usersBox.put(key, updated.toMap());
+
+    if (_currentUser?.id == userId) {
+      _currentUser = updated;
+    }
+    notifyListeners();
+  }
+
   // status: 'approved' | 'rejected'
   Future<void> setProviderStatus(String userId, String status) async {
     final key = _keyForUserId(userId);

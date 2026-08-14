@@ -29,8 +29,7 @@ class PendingApprovalScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () =>
-                    Navigator.popUntil(context, (route) => route.isFirst),
+                onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
                 child: const Text('Back to app'),
               ),
             ],

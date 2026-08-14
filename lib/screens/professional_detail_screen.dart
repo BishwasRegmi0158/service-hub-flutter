@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/professional.dart';
 import '../providers/booking_data_provider.dart';
+import '../utils/image_helper.dart';
 import 'booking_form_screen.dart';
 
 class ProfessionalDetailScreen extends StatelessWidget {
@@ -31,17 +32,7 @@ class ProfessionalDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              professional.photoUrl,
-              width: double.infinity,
-              height: 260,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                height: 260,
-                color: Colors.grey[200],
-                child: const Icon(Icons.person_outline, size: 70),
-              ),
-            ),
+            professionalPhotoWidget(professional.photoUrl, width: double.infinity, height: 260),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(

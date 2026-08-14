@@ -51,22 +51,24 @@ class Professional {
   String get fullName => '$firstName $lastName';
   String get location => '$city, $state';
 
-  Professional copyWith({
+ Professional copyWith({
     double? pricePerHour,
     String? bio,
     int? experienceYears,
     bool? isApproved,
+    String? photoUrl,
+    Trade? trade,
   }) {
     return Professional(
       id: id,
       firstName: firstName,
       lastName: lastName,
-      photoUrl: photoUrl,
+      photoUrl: photoUrl ?? this.photoUrl,
       email: email,
       phone: phone,
       city: city,
       state: state,
-      trade: trade,
+      trade: trade ?? this.trade,
       rating: rating,
       pricePerHour: pricePerHour ?? this.pricePerHour,
       experienceYears: experienceYears ?? this.experienceYears,

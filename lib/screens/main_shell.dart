@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:servicehub_app/screens/admin/admin_dashboard_screen.dart';
+import 'package:servicehub_app/screens/my_services_screen.dart';
+import 'package:servicehub_app/screens/provider_requests_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/booking_data_provider.dart';
 import 'home_screen.dart';
@@ -9,8 +12,6 @@ import 'wishlist_screen.dart';
 import 'profile_screen.dart';
 import 'admin/manage_providers_screen.dart';
 import 'admin/manage_users_screen.dart';
-import 'provider/provider_requests_screen.dart';
-import 'provider/my_listing_screen.dart';
 
 // Top-level router: picks a shell based on the logged-in account's role.
 // Guests (no logged-in user) and role == 'user' both get the normal
@@ -117,7 +118,7 @@ class _ProviderShellState extends State<_ProviderShell> {
 
   static const _pages = [
     ProviderRequestsScreen(),
-    MyListingScreen(),
+    MyServicesScreen(),
     ProfileScreen(),
   ];
 
@@ -142,7 +143,6 @@ class _ProviderShellState extends State<_ProviderShell> {
 }
 
 // ---------- Admin shell ----------
-
 class _AdminShell extends StatefulWidget {
   const _AdminShell();
 
@@ -154,6 +154,7 @@ class _AdminShellState extends State<_AdminShell> {
   int _currentIndex = 0;
 
   static const _pages = [
+    AdminDashboardScreen(),
     ManageProvidersScreen(),
     ManageUsersScreen(),
     ProfileScreen(),
@@ -170,6 +171,7 @@ class _AdminShellState extends State<_AdminShell> {
         unselectedItemColor: Colors.grey,
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), activeIcon: Icon(Icons.dashboard), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.pending_actions_outlined), activeIcon: Icon(Icons.pending_actions), label: 'Providers'),
           BottomNavigationBarItem(icon: Icon(Icons.people_outline), activeIcon: Icon(Icons.people), label: 'Users'),
           BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profile'),
@@ -178,18 +180,3 @@ class _AdminShellState extends State<_AdminShell> {
     );
   }
 }
-
-// ---------- New screen for My Bookings ----------
-
-class MyBookingsScreen extends StatelessWidget {
-  const MyBookingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Bookings')),
-      body: const Center(child: Text('Bookings will be displayed here')),
-    );
-  }
-}
-

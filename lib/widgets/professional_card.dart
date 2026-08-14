@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:servicehub_app/utils/image_helper.dart';
 import '../models/professional.dart';
 import '../providers/booking_data_provider.dart';
 import '../screens/professional_detail_screen.dart';
@@ -32,14 +33,7 @@ class ProfessionalCard extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    professional.photoUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: const Color(0xFFF1F3F5),
-                      child: const Icon(Icons.person_outline, size: 40),
-                    ),
-                  ),
+                 professionalPhotoWidget(professional.photoUrl, fit: BoxFit.cover),
                   Positioned(
                     top: 6,
                     right: 6,

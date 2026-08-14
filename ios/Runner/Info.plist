@@ -24,6 +24,9 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Used to select a profile photo for your service listing.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
