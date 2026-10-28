@@ -80,7 +80,7 @@ lib/
     professional_card.dart           -> reusable card used across grids
 ```
 
-## For your project report
+## Project report
 - **Public API:** RandomUser.me — used for realistic professional profile data
 - **Domain data:** trades, pricing, ratings, and bios are generated
   locally since no public API exists for home-service listings
